@@ -169,47 +169,4 @@ menuToggle.addEventListener('click', () => {
   menuToggle.setAttribute('aria-expanded', isActive);
 });
 
-document.getElementById('contact-form').addEventListener('submit', function(e) {
-  e.preventDefault(); // Evita envío inmediato para validar
-
-  const form = e.target;
-  const name = form.name.value.trim();
-  const email = form.email.value.trim();
-  const message = form.message.value.trim();
-  const humanCheck = form.humanCheck.value.trim();
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  // Validaciones
-  if (!name) {
-    alert('Por favor ingresa tu nombre completo.');
-    form.name.focus();
-    return;
-  }
-
-  if (!email || !emailRegex.test(email)) {
-    alert('Por favor ingresa un correo electrónico válido.');
-    form.email.focus();
-    return;
-  }
-
-  if (!message) {
-    alert('Por favor escribe un mensaje.');
-    form.message.focus();
-    return;
-  }
-
-  if (humanCheck !== '5') {
-    alert('Respuesta incorrecta a la pregunta anti-spam.');
-    form.humanCheck.focus();
-    return;
-  }
-
-  // Si pasa todas las validaciones, aquí puedes enviar el formulario.
-  // Por ejemplo, usando fetch a un backend o método tradicional:
-  // form.submit();
-
-  alert('Formulario enviado correctamente (simulado).');
-  form.reset();
-});
 
