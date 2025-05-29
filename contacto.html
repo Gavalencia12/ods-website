@@ -84,49 +84,72 @@
     </div>
   </section>
   
-
   <main class="contact-main">
-    <h2>Contacto</h2>
-	<!-- Incluye SDK de EmailJS -->
-		<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-        <script>
-          document.addEventListener("DOMContentLoaded", function () {
-            emailjs.init("t_ieQQAJXKeNkuHy-"); // Tu public key EmailJS
-
-            const form = document.querySelector("form");
-            form.addEventListener("submit", function (event) {
-              event.preventDefault();
-
-              emailjs.sendForm("service_vui6i3l", "template_sw42abi", this)
-                .then(() => {
-                  alert("Mensaje enviado con éxito!");
-                  form.reset();
-                }, (err) => {
-                  alert("Error al enviar: " + JSON.stringify(err));
-                });
-            });
-          });
-        </script>
-
-
-
-        <form id="contact-form" novalidate>
-                <label for="name">Nombre completo <span aria-hidden="true">*</span></label>
-                <input type="text" id="name" name="name" required aria-required="true" placeholder="Tu nombre completo" />
-
-                <label for="email">Correo electrónico <span aria-hidden="true">*</span></label>
-                <input type="email" id="email" name="email" required aria-required="true" placeholder="correo@ejemplo.com" />
-
-                <label for="message">Mensaje <span aria-hidden="true">*</span></label>
-                <textarea id="message" name="message" required aria-required="true" placeholder="Escribe tu mensaje aquí" rows="5"></textarea>
-
-                <label for="humanCheck">¿Cuánto es 3 + 2? <span aria-hidden="true">*</span></label>
-                <input type="text" id="humanCheck" name="humanCheck" required aria-required="true" placeholder="Respuesta" />
-
-                <p><em>Nota: La información enviada se transmitirá vía correo electrónico sin cifrado.</em></p>
-
-                <button type="submit">Enviar</button>
-        </form>
+	<h2>Contacto</h2>
+		<!-- Incluye SDK de EmailJS -->
+	<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+	    <script>
+	      document.addEventListener("DOMContentLoaded", function () {
+	        emailjs.init("t_ieQQAJXKeNkuHy-"); // Tu public key EmailJS
+	    
+	        const form = document.getElementById("contact-form");
+	    
+	        form.addEventListener("submit", function (event) {
+	          event.preventDefault();
+	    
+	          const name = form.name.value.trim();
+	          const email = form.email.value.trim();
+	          const message = form.message.value.trim();
+	          const humanCheck = form.humanCheck.value.trim();
+	    
+	          // Expresión regular simple para validar email
+	          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	    
+	          // Validaciones
+	          if (!email || !emailRegex.test(email)) {
+	            alert("Por favor ingresa un correo electrónico válido.");
+	            form.email.focus();
+	            return false;
+	          }
+	          if (!message) {
+	            alert("Por favor escribe un mensaje.");
+	            form.message.focus();
+	            return false;
+	          }
+	          if (humanCheck !== "5") {
+	            alert("Respuesta incorrecta a la pregunta anti-spam.");
+	            form.humanCheck.focus();
+	            return false;  // <-- Aquí se detiene el envío si la respuesta es incorrecta
+	          }
+	    
+	          // Si pasa todas las validaciones, se envía el formulario con EmailJS
+	          emailjs.sendForm("service_vui6i3l", "template_sw42abi", this)
+	            .then(() => {
+	              alert("Mensaje enviado con éxito!");
+	              form.reset();
+	            }, (err) => {
+	              alert("Error al enviar: " + JSON.stringify(err));
+	            });
+	        });
+	      });
+	</script>
+	<form id="contact-form" novalidate>
+	        <label for="name">Nombre completo <span aria-hidden="true">*</span></label>
+	        <input type="text" id="name" name="name" required aria-required="true" placeholder="Tu nombre completo" />
+	
+	        <label for="email">Correo electrónico <span aria-hidden="true">*</span></label>
+	        <input type="email" id="email" name="email" required aria-required="true" placeholder="correo@ejemplo.com" />
+	
+	        <label for="message">Mensaje <span aria-hidden="true">*</span></label>
+	        <textarea id="message" name="message" required aria-required="true" placeholder="Escribe tu mensaje aquí" rows="5"></textarea>
+	
+	        <label for="humanCheck">¿Cuánto es 3 + 2? <span aria-hidden="true">*</span></label>
+	        <input type="text" id="humanCheck" name="humanCheck" required aria-required="true" placeholder="Respuesta" />
+	
+	        <p><em>Nota: La información enviada se transmitirá vía correo electrónico sin cifrado.</em></p>
+	
+		<button type="submit">Enviar</button>
+	</form>
   </main>
 
   <footer>
