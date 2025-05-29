@@ -19,7 +19,7 @@ const toggleImagesDemo = document.getElementById('toggle-images-demo');
 const toggleLinksDemo = document.getElementById('toggle-links-demo');
 const colorBlindDemo = document.getElementById('color-blind-demo');
 
-// Elementos globales — **corregidos IDs aquí**
+// Elementos globales
 const body = document.body;
 const increaseFontGlobal = document.getElementById('increase-font');
 const decreaseFontGlobal = document.getElementById('decrease-font');
@@ -99,51 +99,142 @@ function applyFontFamilyGlobal(font) {
   });
 }
 function toggleClassGlobal(className) {
-  const enabled = body.classList.toggle(className);
-  return enabled;
+  return body.classList.toggle(className);
 }
 
-// Eventos globales
+// --- Cargar configuraciones guardadas al cargar la página ---
+document.addEventListener('DOMContentLoaded', () => {
+  // Fuente tamaño
+  const savedFontSize = localStorage.getItem('fontSizeGlobal');
+  if (savedFontSize) {
+    currentFontSizeGlobal = parseFloat(savedFontSize);
+    applyFontSizeGlobal();
+  }
+
+  // Fuente familia
+  const savedFontFamily = localStorage.getItem('fontFamilyGlobal');
+  if (savedFontFamily) {
+    changeFontGlobal.value = savedFontFamily;
+    applyFontFamilyGlobal(savedFontFamily);
+  }
+
+  // Modo oscuro
+  const darkModeEnabled = localStorage.getItem('darkModeEnabled') === 'true';
+  if (darkModeEnabled) {
+    body.classList.add('dark-mode');
+    toggleDarkGlobal.setAttribute('aria-pressed', 'true');
+  } else {
+    body.classList.remove('dark-mode');
+    toggleDarkGlobal.setAttribute('aria-pressed', 'false');
+  }
+
+  // Alto contraste
+  const contrastEnabled = localStorage.getItem('highContrastEnabled') === 'true';
+  if (contrastEnabled) {
+    body.classList.add('high-contrast');
+    toggleContrastGlobal.setAttribute('aria-pressed', 'true');
+  } else {
+    body.classList.remove('high-contrast');
+    toggleContrastGlobal.setAttribute('aria-pressed', 'false');
+  }
+
+  // Cursor grande
+  const cursorEnabled = localStorage.getItem('cursorLargeEnabled') === 'true';
+  if (cursorEnabled) {
+    body.classList.add('cursor-large');
+    toggleCursorGlobal.setAttribute('aria-pressed', 'true');
+  } else {
+    body.classList.remove('cursor-large');
+    toggleCursorGlobal.setAttribute('aria-pressed', 'false');
+  }
+
+  // Quitar imágenes
+  const imagesDisabled = localStorage.getItem('noImagesEnabled') === 'true';
+  if (imagesDisabled) {
+    body.classList.add('no-images');
+    toggleImagesGlobal.setAttribute('aria-pressed', 'true');
+  } else {
+    body.classList.remove('no-images');
+    toggleImagesGlobal.setAttribute('aria-pressed', 'false');
+  }
+
+  // Quitar links
+  const linksDisabled = localStorage.getItem('noLinksEnabled') === 'true';
+  if (linksDisabled) {
+    body.classList.add('no-links');
+    toggleLinksGlobal.setAttribute('aria-pressed', 'true');
+  } else {
+    body.classList.remove('no-links');
+    toggleLinksGlobal.setAttribute('aria-pressed', 'false');
+  }
+
+  // Daltonismo - filtro color
+  const savedColorBlind = localStorage.getItem('colorBlindGlobal') || 'normal';
+  body.classList.remove('color-blind-rg', 'color-blind-by');
+  if (savedColorBlind !== 'normal') {
+    body.classList.add(savedColorBlind);
+  }
+  colorBlindGlobal.value = savedColorBlind;
+});
+
+// --- Eventos globales ---
 increaseFontGlobal?.addEventListener('click', () => {
   if (currentFontSizeGlobal < maxFontSizeGlobal) {
     currentFontSizeGlobal = Math.min(maxFontSizeGlobal, currentFontSizeGlobal + 0.1);
     applyFontSizeGlobal();
+    localStorage.setItem('fontSizeGlobal', currentFontSizeGlobal);
   }
 });
+
 decreaseFontGlobal?.addEventListener('click', () => {
   if (currentFontSizeGlobal > minFontSizeGlobal) {
     currentFontSizeGlobal = Math.max(minFontSizeGlobal, currentFontSizeGlobal - 0.1);
     applyFontSizeGlobal();
+    localStorage.setItem('fontSizeGlobal', currentFontSizeGlobal);
   }
 });
+
 changeFontGlobal?.addEventListener('change', () => {
   applyFontFamilyGlobal(changeFontGlobal.value);
+  localStorage.setItem('fontFamilyGlobal', changeFontGlobal.value);
 });
+
 toggleDarkGlobal?.addEventListener('click', () => {
   const enabled = toggleClassGlobal('dark-mode');
   toggleDarkGlobal.setAttribute('aria-pressed', enabled);
+  localStorage.setItem('darkModeEnabled', enabled);
 });
+
 toggleContrastGlobal?.addEventListener('click', () => {
   const enabled = toggleClassGlobal('high-contrast');
   toggleContrastGlobal.setAttribute('aria-pressed', enabled);
+  localStorage.setItem('highContrastEnabled', enabled);
 });
+
 toggleCursorGlobal?.addEventListener('click', () => {
   const enabled = toggleClassGlobal('cursor-large');
   toggleCursorGlobal.setAttribute('aria-pressed', enabled);
+  localStorage.setItem('cursorLargeEnabled', enabled);
 });
+
 toggleImagesGlobal?.addEventListener('click', () => {
   const enabled = toggleClassGlobal('no-images');
   toggleImagesGlobal.setAttribute('aria-pressed', enabled);
+  localStorage.setItem('noImagesEnabled', enabled);
 });
+
 toggleLinksGlobal?.addEventListener('click', () => {
   const enabled = toggleClassGlobal('no-links');
   toggleLinksGlobal.setAttribute('aria-pressed', enabled);
+  localStorage.setItem('noLinksEnabled', enabled);
 });
+
 colorBlindGlobal?.addEventListener('change', () => {
   body.classList.remove('color-blind-rg', 'color-blind-by');
   if (colorBlindGlobal.value !== 'normal') {
     body.classList.add(colorBlindGlobal.value);
   }
+  localStorage.setItem('colorBlindGlobal', colorBlindGlobal.value);
 });
 
 // Botón flotante para mostrar/ocultar menú accesibilidad
@@ -161,6 +252,7 @@ btnAccessibility.addEventListener('click', () => {
   }
 });
 
+// Botón hamburguesa menú principal
 const menuToggle = document.getElementById('menu-toggle');
 const mainNav = document.getElementById('main-nav');
 
@@ -168,5 +260,3 @@ menuToggle.addEventListener('click', () => {
   const isActive = mainNav.classList.toggle('active');
   menuToggle.setAttribute('aria-expanded', isActive);
 });
-
-
